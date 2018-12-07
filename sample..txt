@@ -1,0 +1,140 @@
+import tensorflow
+
+import numpy
+import pandas
+from keras.models import Sequential
+from keras.layers import Dense
+from keras.wrappers.scikit_learn import KerasRegressor
+from sklearn.model_selection import cross_val_score
+from sklearn.model_selection import KFold
+from sklearn.preprocessing import StandardScaler
+from sklearn.pipeline import Pipeline
+
+
+import numpy as np
+import matplotlib.pyplot as plt
+import pandas as pd
+import re
+# load dataset
+
+# split into input (X) and output (Y) variables
+
+
+# load dataset
+# Importing the libraries
+
+# Importing the dataset
+dataset = pd.read_csv('data_set.csv',error_bad_lines=False, encoding = "ISO-8859-1")
+
+  
+X = dataset.iloc[:, 1:13].values
+y = dataset.iloc[:, 13].values
+
+X[:,0] = np.random.randint(1, 12, size=len(X[:,0]))
+
+
+# Encoding categorical data
+from sklearn.preprocessing import LabelEncoder, OneHotEncoder
+labelencoder_X_1 = LabelEncoder()
+X[:, 1] = labelencoder_X_1.fit_transform(X[:, 1])
+classes = dict(zip(labelencoder_X_1.classes_, labelencoder_X_1.transform(labelencoder_X_1.classes_)))
+
+
+
+
+labelencoder_y_1 = LabelEncoder()
+y = labelencoder_y_1.fit_transform(y)
+classes2 = dict(zip(labelencoder_y_1.classes_, labelencoder_y_1.transform(labelencoder_y_1.classes_)))
+
+
+labelencoder_y_1 = LabelEncoder()
+y = labelencoder_y_1.fit_transform(y)
+y = y.astype(int)
+
+
+
+#Missing Data
+from sklearn.preprocessing import Imputer
+imputer = Imputer(missing_values = 'NaN', strategy = 'mean', axis = 0)
+imputer = imputer.fit(X[:, :])
+X[:, :] = imputer.transform(X[:, :])
+X = X.astype(float)
+
+
+# define base model
+def baseline_model():
+	# create model
+	model = Sequential()
+	model.add(Dense(12, input_dim=12, kernel_initializer='normal', activation='relu'))
+	model.add(Dense(1, kernel_initializer='normal'))
+	# Compile model
+	model.compile(loss='mean_squared_error', optimizer='adam')
+	return model
+
+
+# fix random seed for reproducibility
+seed = 7
+numpy.random.seed(seed)
+# evaluate model with standardized dataset
+estimator = KerasRegressor(build_fn=baseline_model, epochs=100, batch_size=5, verbose=0)
+
+
+kfold = KFold(n_splits=10, random_state=seed)
+results = cross_val_score(estimator, X, y, cv=kfold)
+print("Results: %.2f (%.2f) MSE" % (results.mean(), results.std()))
+
+
+# evaluate model with standardized dataset
+numpy.random.seed(seed)
+estimators = []
+estimators.append(('standardize', StandardScaler()))
+estimators.append(('mlp', KerasRegressor(build_fn=baseline_model, epochs=50, batch_size=5, verbose=0)))
+pipeline = Pipeline(estimators)
+kfold = KFold(n_splits=10, random_state=seed)
+results = cross_val_score(pipeline, X, y, cv=kfold)
+print("Standardized: %.2f (%.2f) MSE" % (results.mean(), results.std()))
+
+
+
+# define the model
+def larger_model():
+	# create model
+	model = Sequential()
+	model.add(Dense(13, input_dim=13, kernel_initializer='normal', activation='relu'))
+	model.add(Dense(6, kernel_initializer='normal', activation='relu'))
+	model.add(Dense(1, kernel_initializer='normal'))
+	# Compile model
+	model.compile(loss='mean_squared_error', optimizer='adam')
+	return model
+
+
+numpy.random.seed(seed)
+estimators = []
+estimators.append(('standardize', StandardScaler()))
+estimators.append(('mlp', KerasRegressor(build_fn=larger_model, epochs=50, batch_size=5, verbose=0)))
+pipeline = Pipeline(estimators)
+kfold = KFold(n_splits=10, random_state=seed)
+results = cross_val_score(pipeline, X, Y, cv=kfold)
+print("Larger: %.2f (%.2f) MSE" % (results.mean(), results.std()))
+
+
+# define wider model
+def wider_model():
+	# create model
+	model = Sequential()
+	model.add(Dense(20, input_dim=13, kernel_initializer='normal', activation='relu'))
+	model.add(Dense(1, kernel_initializer='normal'))
+	# Compile model
+	model.compile(loss='mean_squared_error', optimizer='adam')
+	return model
+
+
+numpy.random.seed(seed)
+estimators = []
+estimators.append(('standardize', StandardScaler()))
+estimators.append(('mlp', KerasRegressor(build_fn=wider_model, epochs=100, batch_size=5, verbose=0)))
+pipeline = Pipeline(estimators)
+kfold = KFold(n_splits=10, random_state=seed)
+results = cross_val_score(pipeline, X, Y, cv=kfold)
+print("Wider: %.2f (%.2f) MSE" % (results.mean(), results.std()))
+
