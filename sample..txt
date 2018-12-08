@@ -1,140 +1,251 @@
-import tensorflow
-
-import numpy
-import pandas
-from keras.models import Sequential
-from keras.layers import Dense
-from keras.wrappers.scikit_learn import KerasRegressor
-from sklearn.model_selection import cross_val_score
-from sklearn.model_selection import KFold
-from sklearn.preprocessing import StandardScaler
-from sklearn.pipeline import Pipeline
-
-
-import numpy as np
-import matplotlib.pyplot as plt
-import pandas as pd
-import re
-# load dataset
-
-# split into input (X) and output (Y) variables
-
-
-# load dataset
-# Importing the libraries
-
-# Importing the dataset
-dataset = pd.read_csv('data_set.csv',error_bad_lines=False, encoding = "ISO-8859-1")
-
-  
-X = dataset.iloc[:, 1:13].values
-y = dataset.iloc[:, 13].values
-
-X[:,0] = np.random.randint(1, 12, size=len(X[:,0]))
-
-
-# Encoding categorical data
-from sklearn.preprocessing import LabelEncoder, OneHotEncoder
-labelencoder_X_1 = LabelEncoder()
-X[:, 1] = labelencoder_X_1.fit_transform(X[:, 1])
-classes = dict(zip(labelencoder_X_1.classes_, labelencoder_X_1.transform(labelencoder_X_1.classes_)))
-
-
-
-
-labelencoder_y_1 = LabelEncoder()
-y = labelencoder_y_1.fit_transform(y)
-classes2 = dict(zip(labelencoder_y_1.classes_, labelencoder_y_1.transform(labelencoder_y_1.classes_)))
-
-
-labelencoder_y_1 = LabelEncoder()
-y = labelencoder_y_1.fit_transform(y)
-y = y.astype(int)
-
-
-
-#Missing Data
-from sklearn.preprocessing import Imputer
-imputer = Imputer(missing_values = 'NaN', strategy = 'mean', axis = 0)
-imputer = imputer.fit(X[:, :])
-X[:, :] = imputer.transform(X[:, :])
-X = X.astype(float)
-
-
-# define base model
-def baseline_model():
-	# create model
-	model = Sequential()
-	model.add(Dense(12, input_dim=12, kernel_initializer='normal', activation='relu'))
-	model.add(Dense(1, kernel_initializer='normal'))
-	# Compile model
-	model.compile(loss='mean_squared_error', optimizer='adam')
-	return model
-
-
-# fix random seed for reproducibility
-seed = 7
-numpy.random.seed(seed)
-# evaluate model with standardized dataset
-estimator = KerasRegressor(build_fn=baseline_model, epochs=100, batch_size=5, verbose=0)
-
-
-kfold = KFold(n_splits=10, random_state=seed)
-results = cross_val_score(estimator, X, y, cv=kfold)
-print("Results: %.2f (%.2f) MSE" % (results.mean(), results.std()))
-
-
-# evaluate model with standardized dataset
-numpy.random.seed(seed)
-estimators = []
-estimators.append(('standardize', StandardScaler()))
-estimators.append(('mlp', KerasRegressor(build_fn=baseline_model, epochs=50, batch_size=5, verbose=0)))
-pipeline = Pipeline(estimators)
-kfold = KFold(n_splits=10, random_state=seed)
-results = cross_val_score(pipeline, X, y, cv=kfold)
-print("Standardized: %.2f (%.2f) MSE" % (results.mean(), results.std()))
-
-
-
-# define the model
-def larger_model():
-	# create model
-	model = Sequential()
-	model.add(Dense(13, input_dim=13, kernel_initializer='normal', activation='relu'))
-	model.add(Dense(6, kernel_initializer='normal', activation='relu'))
-	model.add(Dense(1, kernel_initializer='normal'))
-	# Compile model
-	model.compile(loss='mean_squared_error', optimizer='adam')
-	return model
-
-
-numpy.random.seed(seed)
-estimators = []
-estimators.append(('standardize', StandardScaler()))
-estimators.append(('mlp', KerasRegressor(build_fn=larger_model, epochs=50, batch_size=5, verbose=0)))
-pipeline = Pipeline(estimators)
-kfold = KFold(n_splits=10, random_state=seed)
-results = cross_val_score(pipeline, X, Y, cv=kfold)
-print("Larger: %.2f (%.2f) MSE" % (results.mean(), results.std()))
-
-
-# define wider model
-def wider_model():
-	# create model
-	model = Sequential()
-	model.add(Dense(20, input_dim=13, kernel_initializer='normal', activation='relu'))
-	model.add(Dense(1, kernel_initializer='normal'))
-	# Compile model
-	model.compile(loss='mean_squared_error', optimizer='adam')
-	return model
-
-
-numpy.random.seed(seed)
-estimators = []
-estimators.append(('standardize', StandardScaler()))
-estimators.append(('mlp', KerasRegressor(build_fn=wider_model, epochs=100, batch_size=5, verbose=0)))
-pipeline = Pipeline(estimators)
-kfold = KFold(n_splits=10, random_state=seed)
-results = cross_val_score(pipeline, X, Y, cv=kfold)
-print("Wider: %.2f (%.2f) MSE" % (results.mean(), results.std()))
-
+Louisiana Tech University
+University of California Santa Barbara
+Stanford University
+Florida State University
+Gannon University
+University of Rochester
+Towson University
+Tennessee Technological University, Cookeville
+University of Texas, Dallas
+Pittsburg State University
+Eastern Kentucky University
+Kent State University
+Iowa State University
+Carnegie Mellon University
+HOUSTON CLEAR LAKE
+Villanova University
+California State University, East Bay
+Lamar University
+George Mason University
+Old Dominion University
+University of Waterloo (Canada)
+Northwest Missouri State University
+Indiana State University
+University of missouri, kansas city
+Southern University at new orleans
+univ of north texas
+Youngstown state university
+University of Maryland - Robert H Smith School of Business
+University of California, Los Angeles
+Michigan Technological University
+MIT
+Michigan State University
+Lawrence Technological University
+California State University, Northridge
+Kutztown University of Pennsylvania
+University Of Arkansas at Little Rock
+Penn State
+Bradley University
+Houston clear lake
+Dalhousie University
+University of Texas, Tyler
+University of California, Irvine
+University of nevada,Reno
+University of Maryland, Baltimore County
+Pennsylvania State University
+University of Louisville
+State University of New York at Stony Brook
+Univeristu of nebraska lincoln
+University of Pittsburgh
+University of Dayton, Ohio
+Virginia Tech
+Clemson University
+OLIN 
+University of Lincoln-Nebraska
+University of Michigan Ann Arbor
+western kentucky university
+California State University,Los angeles
+Rensselaer Polytechnic Institute
+massachusetts lowell
+Minnesota State University,Mankato
+Case Western Reserve University
+University Of Oklahoma
+Midwestern state university
+university of New Mexico
+Southern Illinois university, Edwardsville
+Virginia Commonwealth University
+University of Michigan-Dearborn
+New York Institute of Technology
+Virginia Polytechnic Institute and State University
+university of massachusetts Dartmouth
+University of Minnesota, Duluth
+University of Kansas at lawrence
+University of new orleans
+Texas A & M college station
+University of Minnesota, Twin Cities
+Texas A&M University, Commerce
+Murray State University
+university of Louisville 
+Northeastern University, Boston
+University of Toledo
+Arkansas Tech University
+Oklahoma state university still water
+University of Tennessee, Knoxville
+University of Chicago
+OU Norman
+University of Maryland, College Park
+Texas A&M University
+Ohio State University
+troy
+New Mexico State University
+San Francisco State University
+Wayne State University
+Technical University of Denmark
+university of utah
+oregon state university
+MIR
+University of Illinois at Springfield
+Oklahoma City University
+Missouri University of Science and Technology
+northern illinois university
+University of toledo
+Stevens Institute of Technology
+Arizona State University
+University of Illinois, Chicago
+University of New Mexico
+Hong Kong university of Science and Technology 
+suny,it
+University of Alabama, Huntsville
+University of Pennsylvania
+Buffalo
+USF
+University of Califorinia, Irvine
+Florida state university
+Boston University
+university of toledo
+UHMC
+University Of Missouri Columbia
+Princeton University
+New Jersey Institute of Technology
+ETH Zurich
+University of Florida, Gainsville
+Washington State University
+University of Massachusetts, Amherst
+Kansas State University
+Texas Tech University
+North Carolina State University
+University Of Akron
+California State University, Chico
+University of Central Florida
+Cornell University
+Rochester Institute of Technology
+university of ganon
+University of Massachusetts Dartmouth
+University of Colorado Boulder
+University Of Delaware
+Stony Brook University
+SOUTH ALABAMA
+University of Washington, Seattle
+University of North Texas
+University of Utah
+Colorado State University
+SUNY, Albany
+university of virginia
+ Western new england
+Southern Methodist University
+wichita state university
+TAMUK
+West Virginia University
+Arkansas State University
+University of California, Riverside
+California State University, Long Beach
+Wright State University
+Duke University
+California State University, San Bernardino
+University of California
+Howard University
+Philadelphia University
+Wyane State University
+university of new orleans
+university of newhaven
+Michigan university
+University of Bridgeport
+University of Texas, San Antonio
+California Institute of Technology
+old dominion university
+Southern Illinois University, Carbondale
+Fairleigh Dickinson University
+University of Texas, Austin
+University of connecticut
+University of Massachusetts, Dartmouth
+University of Southern Missisippi
+SUNY, Binghamton
+University of California San Diego
+Illinios Institute of Technology, Chicago
+Rutgers State University, New Brunswick
+University of Mary Hardin-Baylor
+university of buffalo
+UNIV OF MISSOURI-COLUMBIA
+University Of Kentucky
+University of Massachusetts, worchester
+George Washington University
+Texas State University
+Syracuse University
+University of Massachusetts, Lowell
+University of North Carolina, Charlotte
+Portland State University
+State University of New York at Binghamton
+University of California, San Diego
+Central Michigan University
+University of Houston 
+murray state university
+Auburn University
+University of California at Berkeley
+Texas A&M University, Kingsville
+University of Akron
+western michigan university
+Western Illinois University
+kent state university
+University Of Pennsylvania
+University of Cinncinati
+Emory University
+New Mexico State university
+New York University, Brooklyn
+UNIVERSITY OF SOUTH ALABAMA
+Univ of toledo
+Mississippi State University
+TU Delft
+University of California, San diego
+Northwest polytechnic university
+Georgia State University
+University of south Alabama
+arkansas state university
+Indiana University, Bloomington
+University of Colorado Denver
+Santa Clara University
+University of New Hampshire
+Tribhuvan University
+Oklahoma State University
+Columbia University
+Florida institute of technology
+Texas A&M University, College Station
+University of South Florida
+Binghamton University
+Oregon State University
+University of Texas, Arlington
+Arkansas University
+Wichita state university
+University of Southern California
+University of Illinois,Urbana Champaign
+Cleveland  State University
+University of california santa cruz
+University of Arizona
+University of Wisconsin, Madison
+UCM
+Purdue University
+university of nebraska, omaha
+Indiana University - Purdue University, Indianapolis
+University of arizona
+Missouri University of Science & Technology
+Wichita State University
+San Jose State University
+SUNY, Buffalo
+Northern Illinois University
+University of Louisiana at Lafayette
+University of North Florida
+California State University, Sacramento
+California State University, Fullerton
+San Diego State University
+california state university, San Bernardino
+Georgia Institue of Technology
+UT San Antonio
