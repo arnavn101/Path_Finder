@@ -2,7 +2,7 @@ while(True):
     import os
     import time
     import sys
-    exists = os.path.isfile('C:\\Users')
+    exists = os.path.isfile('execute.py')
     if exists:
         from ann_predict import ann_predict
         
