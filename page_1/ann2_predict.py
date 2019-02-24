@@ -168,9 +168,10 @@ def ann2_predict(mon,field,sat,gre,awa,toefl,ielts,work,paper,loan,international
     for element in sentence:
         final = element + "  " + final
         y+=1
-    
+    import random
     new = []
     for key in classes2.keys():
       new.append(key)
-    return(" You are most likely to get into " + final)
+    
+    return(" You are most likely to get accepted into " + final)
 #ann_predict(3, 'Jan', 'CS', 1400, 111, 10, 19, 101,1,1,1,'yes',90)

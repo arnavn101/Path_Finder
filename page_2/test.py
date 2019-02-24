@@ -1,7 +1,6 @@
 from flask import Flask, render_template, request
 
 app = Flask(__name__)
-
 @app.route('/')
 def data():
    return render_template('test.html')
@@ -25,7 +24,7 @@ def result():
 
       #return render_template("results.html", result = result)
       from ann_predict import ann_predict
-      return ann_predict(doa, field, sat, gre, awa, toefl,ielts,experience,loan,papers,inter,grade, college)
+      return ann_predict(doa, field, sat, gre, awa, toefl,ielts,experience,loan,papers,inter,grade, college) + render_template('results.html')
 
 if __name__ == '__main__':
    app.run(debug = True)

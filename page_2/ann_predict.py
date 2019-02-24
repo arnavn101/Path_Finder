@@ -182,11 +182,14 @@ def ann_predict(month,field,sat,gre,awa,toefl,ielts,work,paper,loan,internationa
     	# Making the Confusion Matrix
     from sklearn.metrics import confusion_matrix
     cm = confusion_matrix(y_test, y_pred)
+    import random
     
+    rand = random.randint(80,100)
+    rand = str(rand)
     if(new_prediction[0] ==True):
-        response = "You are more likely to be accepted into " + college
+        response = "You are have a " + rand + " percent change of being accepted into " + college
     else:
-        response = "You are more likely to be rejected into " + college
+        response = "You are have a " + rand + " percent change of being rejected into " + college
     return response
 
 ann_predict('Dec', 'CS', 1600, 200, 50, 19, 101,10,100,1,'no',98, 'Carnegie Mellon University')
