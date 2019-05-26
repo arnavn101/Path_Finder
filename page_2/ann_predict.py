@@ -187,9 +187,9 @@ def ann_predict(month,field,sat,gre,awa,toefl,ielts,work,paper,loan,internationa
     rand = random.randint(80,100)
     rand = str(rand)
     if(new_prediction[0] ==True):
-        response = "You are have a " + rand + " percent change of being accepted into " + college
+        response = "You have a "  + " high chance of being accepted into " + college
     else:
-        response = "You are have a " + rand + " percent change of being rejected into " + college
+        response = "You have a " +  " high chance of being rejected into " + college
     return response
 
 ann_predict('Dec', 'CS', 1600, 200, 50, 19, 101,10,100,1,'no',98, 'Carnegie Mellon University')
