@@ -9,11 +9,9 @@
 # Installing Keras
 # pip install --upgrade keras
 
-# Part 1 - Data Preprocessing
-
 # Scale Data: NewValue = (((OldValue - OldMin) * (NewMax - NewMin)) / (OldMax - OldMin)) + NewMin
 
-#	array = np.array([['Dec', 'CS', 1600, 111, 10, 19, 101,1,1,1,'yes',90, 'Carnegie Mellon University']])
+# array = np.array([['Dec', 'CS', 1600, 111, 10, 19, 101,1,1,1,'yes',90, 'Carnegie Mellon University']])
 
 
 def ann_predict(month,field,sat,gre,awa,toefl,ielts,work,paper,loan,international,grade,university ):
@@ -69,7 +67,7 @@ def ann_predict(month,field,sat,gre,awa,toefl,ielts,work,paper,loan,internationa
     X_train = sc.fit_transform(X_train)
     X_test = sc.transform(X_test)
     
-    	# Part 2 - Now let's make the ANN!
+    	#  make the ANN!
     
     	# Importing the Keras libraries and packages
     import keras
