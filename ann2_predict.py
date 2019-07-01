@@ -76,7 +76,7 @@ def ann_predict(mon,field,sat,gre,awa,toefl,ielts,work,paper,loan,international,
 
     
     sentence = []
-    x = 0;
+    x = 0
     number = 1
     choice = number
 
